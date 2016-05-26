@@ -17,8 +17,6 @@ before_script:
     - git config --global user.email 'xcnick0412@gmail.com'
 
 script:
-    - git submodule init
-    - git submodule update
     - hexo generate
 
 after_success:
