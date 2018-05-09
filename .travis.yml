@@ -15,8 +15,7 @@ install:
 before_script:
     - git config --global user.name 'xcnick'
     - git config --global user.email 'xcnick0412@gmail.com'
-    - git submodule init
-    - git submodule update --remote
+    - git submodule update --init --recursive
     - sed -i 's/(\[\\\\/(\[/' node_modules/marked/lib/marked.js
 
 script:
