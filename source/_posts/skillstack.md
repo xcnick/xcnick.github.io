@@ -10,13 +10,13 @@ tags:
 # 分析
 ## 工作用技术
 * `Java`：后端、网络
-* `C#`：windows桌面
+* `C#`：`Windows`桌面
 * 网络：`TCP`、`UDP`、`HTTP`协议基本用法
 * 系统：`Ubuntu（Linux）`、`Windows Server`基本配置
 
 ## 详细说明
-使用`Java`的场景主要包括，服务端逻辑、网络、数据库访问、`RESTFUL`，使用的框架包括`Netty`、`Spring`  
-使用`C#`的场景主要是Windows客户端，涉及的框架包括`WPF`、`UWP`，使用的编程模式是`MVVM`
+使用`Java`的场景主要包括，服务端逻辑、网络、数据库访问、`RESTFUL`，使用的框架包括`Netty`、`Spring`
+使用`C#`的场景主要是`Windows`客户端，涉及的框架包括`WPF`、`UWP`，使用的编程模式是`MVVM`
 ***
 ## 接触过的技术
 * 编程语言：`Objective-C`、`Python`、`Cpp`、`GO`、`Javascript`

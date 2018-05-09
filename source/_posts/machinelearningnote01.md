@@ -1,6 +1,6 @@
 title: 《机器学习》周志华版读书笔记01
 date: 2017-01-16 20:26:43
-tags:
+tags: MachineLearning
 ---
 
 # 模型评估与选择

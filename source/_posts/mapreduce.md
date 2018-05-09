@@ -1,6 +1,6 @@
 title: Google MapReduce
 date: 2017-01-17 15:34:08
-tags:
+tags: MapReduce
 ---
 
 # 原理
