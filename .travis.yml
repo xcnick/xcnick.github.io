@@ -20,7 +20,5 @@ before_script:
 
 script:
     - hexo generate --config ./source/_data/next.yml
-
--after_success:
     - sed -i'' "/^ *repo/s~github\.com~${GITHUB_TOKEN}@github.com~" ./source/_data/next.yml
     - hexo deploy --config ./source/_data/next.yml
