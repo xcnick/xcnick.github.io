@@ -1,7 +1,6 @@
 title: 数据结构-树
 date: 2018-04-23 10:26:43
 tags: DataStruct
-tags: Math
 mathjax: true
 ---
 
