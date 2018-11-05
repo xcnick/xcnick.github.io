@@ -2,6 +2,10 @@ title: Google MapReduce
 date: 2017-01-17 15:34:08
 tags: MapReduce
 ---
+
+```
+MapReduce原理解析
+```
 <!-- more -->
 # 原理
 利用一个输入key/value pair集合来产生一个输出key/value pair集合
