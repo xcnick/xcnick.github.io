@@ -2,7 +2,7 @@ title: Google MapReduce
 date: 2017-01-17 15:34:08
 tags: MapReduce
 ---
-
+<!-- more -->
 # 原理
 利用一个输入key/value pair集合来产生一个输出key/value pair集合
 * 用户自定义Map函数接受一个输入的key/value pair值，产生一个中间key/value pair值集合；

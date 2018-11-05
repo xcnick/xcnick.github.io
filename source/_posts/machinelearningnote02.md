@@ -4,7 +4,7 @@ tags: MachineLearning
 ---
 
 # 线性模型
-
+<!-- more -->
 ## 基本形式
 $$f(x) = w^Tx + b$$
 
