@@ -1,6 +1,7 @@
 title: 《机器学习》周志华版读书笔记02
 date: 2018-06-11 20:26:43
 tags: MachineLearning
+mathjax: true
 ---
 
 ```
