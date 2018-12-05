@@ -4,9 +4,7 @@ tags: MachineLearning
 mathjax: true
 ---
 
-```
-线性模型
-```
+> 线性模型
 <!-- more -->
 # 线性模型
 

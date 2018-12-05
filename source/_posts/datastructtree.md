@@ -4,9 +4,7 @@ tags: DataStruct
 mathjax: true
 ---
 
-```
-树的基础概念
-```
+> 树的基础概念
 <!-- more -->
 # 树的基本概念
 * 递归定义
