@@ -249,7 +249,7 @@ bool isValidBST(TreeNode *node) {
       s.push(cur);
       cur = cur->left;
     } else {
-      cur = stk.top();
+      cur = s.top();
       s.pop();
       if (pre && cur->val < pre->val) {
         return false;

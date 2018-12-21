@@ -159,8 +159,8 @@ ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
 需要找到链表的中点，可以使用快慢指针实现。快指针每次走两步，慢指针每次走一步，当快指针走完时，慢指针的位置就是中点。
 另外，还需要用到栈，每次慢指针走一步，将值存入栈中，当到达中点时，链表的前半段就存入栈中。再用栈后进先出的性质，可以和后半段链表按照回文对应比较。
 
-```Cpp
-bool isPalindrome(ListNode *node) {
+hea```Cpp
+bool isPalindrome(ListNode *head) {
   if (!head || !head->next) {
     return true;
   }
@@ -190,7 +190,7 @@ bool isPalindrome(ListNode *node) {
 如果要只能用O(1)的空间复杂度，则不能使用stack。使用stack是为了使用其后进先出的特点，可以倒着取出前半段元素。若不使用stack，则可将后半段链表翻转，即可按照回文比较。
 
 ```Cpp
-bool isPalindrome(ListNode *node) {
+bool isPalindrome(ListNode *head) {
   // ...
   // 前面快慢指针的运动与之前代码一致
   // ...
@@ -210,6 +210,7 @@ bool isPalindrome(ListNode *node) {
       pre = pre->next;
   }
   return true;
+}
 ```
 
 # 环形链表
