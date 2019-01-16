@@ -38,6 +38,23 @@ string reverseString(string s) {
 }
 ```
 
+```Python
+def reverseString(self, s):
+    return s[::-1]
+```
+
+```Python
+def reverseString(self, s):
+    """
+    :type s: str
+    :rtype: str
+    """
+    result = ""
+    for i, _ in enumerate(s):
+        result += s[len(s) - 1 - i]
+    return result
+```
+
 # 反转字符串II
 
 > 给定一个字符串和一个整数 k，你需要对从字符串开头算起的每个 2k 个字符的前k个字符进行反转。如果剩余少于 k 个字符，则将剩余的所有全部反转。如果有小于 2k 但大于或等于 k 个字符，则反转前 k 个字符，并将剩余的字符保持原样。
@@ -83,6 +100,23 @@ int reverse(int x) {
 }
 ```
 
+```Python
+def reverse(self, x):
+    """
+    :type x: int
+    :rtype: int
+    """
+    flag = (x >= 0)
+    x = (x if flag else -x)
+    res = 0
+    while x != 0:
+        if res > ((pow(2,31) - 1) / 10):
+            return 0
+        res = res * 10 + x % 10
+        x = x // 10
+    return res if flag else -res
+```
+
 # 字符串中的第一个唯一字符
 
 > 给定一个字符串，找到它的第一个不重复的字符，并返回它的索引。如果不存在，则返回 -1。
@@ -105,6 +139,21 @@ int firstUniqChar(string s) {
 }
 ```
 
+```Python
+def firstUniqChar(self, s):
+    """
+    :type s: str
+    :rtype: int
+    """
+    dict1 = {}
+    for c in s:
+        dict1[c] = dict1[c] + 1 if c in dict1 else 1
+    for i in range(len(s)):
+        if dict1[s[i]] == 1:
+            return i
+    return -1
+```
+
 # 有效的字母异位词
 
 > 给定两个字符串 s 和 t ，编写一个函数来判断 t 是否是 s 的一个字母异位词。
@@ -122,13 +171,32 @@ bool isAnagram(string s, string t) {
   for (int i = 0; i < s.size(); ++i) {
     ++m[s[i] - 'a'];
   }
-  for (int i = 0; t < s.size(); ++i) {
+  for (int i = 0; i < t.size(); ++i) {
     if (--m[t[i] - 'a'] < 0) {
       return false;
     }
   }
   return true;
 }
+```
+
+```Python
+def isAnagram(self, s, t):
+    """
+    :type s: str
+    :type t: str
+    :rtype: bool
+    """
+    if len(s) != len(t):
+        return False
+    m = [0] * 26
+    for c in s:
+        m[ord(c) - ord('a')] += 1
+    for c in t:
+        m[ord(c) - ord('a')] -= 1
+        if m[ord(c) - ord('a')] < 0:
+            return False
+    return True
 ```
 
 # 验证回文字符串
@@ -150,6 +218,9 @@ bool isPalindrome(string s) {
     // 'a' == 97, 'A' = 65
     } else if ((s[left] + 32 - 'a') % 32 != (s[right] + 32 - 'a') % 32) {
       return false;
+    } else {
+      ++left;
+      --right;
     }
   }
   return true;
@@ -167,6 +238,27 @@ bool isAlphaNum(char &ch) {
   }
   return false;
 }
+```
+
+```Python
+def isPalindrome(self, s):
+    """
+    :type s: str
+    :rtype: bool
+    """
+    left = 0
+    right = len(s) - 1
+    while left < right:
+        if not s[left].isalnum():
+            left += 1
+        elif not s[right].isalnum():
+            right -= 1
+        elif s[left].lower() != s[right].lower():
+            return False
+        else:
+            left += 1
+            right -= 1
+    return True
 ```
 
 # 字符串转换整数
@@ -206,6 +298,36 @@ int myAtoi(string str) {
 }
 ```
 
+```Python
+def myAtoi(self, str):
+    """
+    :type str: str
+    :rtype: int
+    """
+    str = str.strip()
+    if not str:
+      return 0
+    sign = 1
+    if str[0] == "-":
+      sign = -1
+    if str[0] in ("+", "-"):
+      str = str[1:]
+
+    num = 0
+    for c in str:
+      if c >= "0" and c <= "9":
+          num = num * 10 + ord(c) - ord("0")
+      else:
+          break
+    num = num * sign
+
+    if num > (pow(2,31) - 1):
+      num = (pow(2,31) - 1)
+    elif num < -pow(2, 31):
+      num = -pow(2, 31)
+    return num
+```
+
 # 实现strStr()
 
 > 给定一个 haystack 字符串和一个 needle 字符串，在 haystack 字符串中找出 needle 字符串出现的第一个位置 (从0开始)。如果不存在，则返回 -1。
@@ -238,6 +360,20 @@ int strStr(string haystack, string needle) {
   }
   return -1;
 }
+```
+
+```Python
+def strStr(self, haystack, needle):
+    """
+    :type haystack: str
+    :type needle: str
+    :rtype: int
+    """
+    l = len(needle)
+    for i in range(len(haystack) - l + 1):
+        if haystack[i:i + l] == needle:
+            return i
+    return -1
 ```
 
 # 最长公共前缀
@@ -281,4 +417,20 @@ string longestCommonPrefix(vector<string> &strs) {
   }
   return strs[0].substr(0, i);
 }
+```
+
+```Python
+def longestCommonPrefix(self, strs):
+    """
+    :type strs: List[str]
+    :rtype: str
+    """
+    if not strs:
+        return ""
+    s1 = min(strs)
+    s2 = max(strs)
+    for i, j in enumerate(s1):
+        if j != s2[i]:
+            return s1[:i]
+    return s1
 ```
