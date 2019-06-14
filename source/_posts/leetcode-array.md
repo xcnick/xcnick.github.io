@@ -157,17 +157,18 @@ void rotate(vector<int> &nums, int k) {
 > 示例 1: 输入: [1,2,3,1] 输出: true
 > 示例 2: 输入: [1,2,3,4] 输出: false
 
-使用哈希表，遍历整个数组，如果表里存在，则返回false，如果不存在，则放入表中。
+使用哈希表，遍历整个数组，如果表里存在，则返回true，如果不存在，则放入表中。
 
 ```Cpp
 bool containsDuplicate(vector<int>& nums) {
   unordered_map<int, int> m;
   for (int i = 0; i < nums.size(); ++i) {
     if (m.find(nums[i]) != nums.end()) {
-      return false;
+      return true;
     }
     ++m[nums[i]];
   }
+  return false;
 }
 ```
 
@@ -308,4 +309,213 @@ def moveZeroes(self, nums):
         if nums[i] != 0:
             nums[j], nums[i] = nums[i], nums[j]
             j += 1
+```
+
+# 两数之和
+
+> 给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那两个整数，并返回他们的数组下标。你可以假设每种输入只会对应一个答案。但是，你不能重复利用这个数组中同样的元素。
+> 示例:给定 nums = [2, 7, 11, 15], target = 9
+> 因为 nums[0] + nums[1] = 2 + 7 = 9 所以返回 [0, 1]
+
+使用一个HashMap来建立数字与其index的映射。
+
+```Cpp
+vector<int> twoSum(vector<int>& nums, int target) {
+  unordered_map<int, int> m;
+  for (int i = 0; i < nums.size(); ++i) {
+    if (m.count(target - nums[i])) {
+      return {i, m[target - nums[i]]};
+    }
+    m[nums[i]] = i;
+  }
+}
+```
+
+```Python
+def twoSum(self, nums, target):
+    """
+    :type nums: List[int]
+    :type target: int
+    :rtype: List[int]
+    """
+    num_dict = {}
+    for i, n in enumerate(nums):
+        if target - n in num_dict:
+            return [num_dict[target - n], i]
+        num_dict[n] = i
+```
+
+# 有效的数独
+
+> 判断一个 9x9 的数独是否有效。只需要根据以下规则，验证已经填入的数字是否有效即可。
+
+1. 数字 1-9 在每一行只能出现一次。
+2. 数字 1-9 在每一列只能出现一次。
+3. 数字 1-9 在每一个以粗实线分隔的 3x3 宫内只能出现一次。
+4. 数独部分空格内已填入了数字，空白格用 '.' 表示。
+
+在遍历每个数字的时候，就看看包含当前位置的行和列以及3x3小方阵中是否已经出现该数字。需要三个标志矩阵，分别记录各行，各列，各小方阵是否出现某个数字。
+
+```Cpp
+bool isValidSudoku(vector<vector<char>> &board) {
+  if (board.empty() || board[0].empty()) {
+    return false;
+  }
+  int m = board.size(), n = board[0].size();
+  vector<vector<bool>> rowFlag(m, vector<bool>(n, false));
+  vector<vector<bool>> colFlag(m, vector<bool>(n, false));
+  vector<vector<bool>> cellFlag(m, vector<bool>(n, false));
+
+  for (int i = 0; i < m; ++i) {
+    for (int j = 0; j < n; ++j) {
+      if (board[i][j] >= '1' && board[i][j] <= '9') {
+        int c = board[i][j] - '1';
+        if (rowFlag[i][c] || colFlag[c][j] || cellFlag[3 * (i / 3) + j / 3][c]) {
+          return false;
+        }
+        rowFlag[i][c] = true;
+        colFlag[c][j] = true;
+        cellFlag[3 * (i / 3) + j / 3][c] = true;
+      }
+    }
+  }
+  return true;
+}
+```
+
+```Python
+def isValidSudoku(self, board):
+    """
+    :type board: List[List[str]]
+    :rtype: bool
+    """
+    Cell = [[] for i in range(9)]
+    Col = [[] for i in range(9)]
+    Row = [[] for i in range(9)]
+
+    for i, row in enumerate(board):
+        for j, num in enumerate(row):
+            if num != '.':
+                k = (i // 3) * 3 + j // 3
+                if num in Row[i] + Col[j] + Cell[k]:
+                    return False
+                Row[i].append(num)
+                Col[j].append(num)
+                Cell[k].append(num)
+    return True
+```
+
+# 旋转图像
+
+> 给定一个 n × n 的二维矩阵表示一个图像。将图像顺时针旋转 90 度。
+说明：你必须在原地旋转图像，这意味着你需要直接修改输入的二维矩阵。请不要使用另一个矩阵来旋转图像。
+
+先对原矩阵取其转置矩阵，然后把每行数字翻转。
+
+```Cpp
+void rotate(vector<vector<int> > &matrix) {
+  int n = matrix.size();
+  for (int i = 0; i < n; ++i) {
+    for (int j = i + 1; j < n; ++j) {
+      swap(matrix[i][j], matrix[j][i]);
+    }
+    reverse(matrix[i].begin(), matrix[i].end());
+  }
+}
+```
+
+```Python
+def rotate(self, matrix):
+    """
+    :type matrix: List[List[int]]
+    :rtype: void Do not return anything, modify matrix in-place instead.
+    """
+    n = len(matrix)
+    for i in range(n):
+        for j in range(i + 1, n):
+            temp = matrix[i][j]
+            matrix[i][j] = matrix[j][i]
+            matrix[j][i] = temp
+        matrix[i] = matrix[i][::-1]
+```
+
+# 求众数
+
+> 给定一个大小为 n 的数组，找到其中的众数。众数是指在数组中出现次数大于 ⌊ n/2 ⌋ 的元素。
+你可以假设数组是非空的，并且给定的数组总是存在众数。
+
+摩尔投票法 Moore Voting。
+
+```Cpp
+int majorityElement(vector<int>& nums) {
+  int res = 0, cnt = 0;
+  for (int &num : nums) {
+    if (cnt == 0) {
+      res = num;
+      ++cnt;
+    } else {
+      if (num == res) {
+        ++cnt;
+      } else {
+        --cnt;
+      }
+    }
+  }
+  return res;
+}
+```
+
+# 搜索二维矩阵 II
+> 编写一个高效的算法来搜索 m x n 矩阵 matrix 中的一个目标值 target。该矩阵具有以下特性：
+* 每行的元素从左到右升序排列。
+* 每列的元素从上到下升序排列。
+
+以左下角或右上角数字为起点，与target比较大小后有明确的运动方向。
+
+```Cpp
+bool searchMatrix(vector<vector<int>>& matrix, int target) {
+  if (matrix.empty() || matrix[0].empty()) {
+    return false;
+  }
+  if (target < matrix[0][0] || target > matrix.back().back()) {
+    return false;
+  }
+  int x = matrix.size() - 1, y = 0;
+  while (true) {
+    if (matrix[x][y] > target) {
+      --x;
+    } else if (matrix[x][y] < target) {
+      ++y;
+    } else {
+      return true;
+    }
+    if (x < 0 || y >= matrix[0].size()) {
+      return false;
+    }
+  }
+}
+```
+
+# 合并两个有序数组
+
+> 给定两个有序整数数组 nums1 和 nums2，将 nums2 合并到 nums1 中，使得 num1 成为一个有序数组。
+* 初始化 nums1 和 nums2 的元素数量分别为 m 和 n。
+* 你可以假设 nums1 有足够的空间（空间大小大于或等于 m + n）来保存 nums2 中的元素。
+
+从nums1和nums2数组的末尾开始一个个比较，把较大的数按顺序从后往前加入混合之后数组的末尾。
+
+```Cpp
+void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+  int i = m - 1, j = n - 1, k = m + n - 1;
+  while (i >= 0 && j >= 0) {
+    if (nums1[i] > nums2[j]) {
+      nums1[k--] = nums1[i--];
+    } else {
+      nums1[k--] = nums2[j--];
+    }
+  }
+  while (j >= 0) {
+    nums1[k--] = nums2[j--];
+  }
+}
 ```

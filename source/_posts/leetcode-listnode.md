@@ -21,6 +21,15 @@ void deleteNode(ListNode* node) {
 }
 ```
 
+```Python
+def deleteNode(self, node):
+    """
+    :type node: ListNode
+    :rtype: void Do not return anything, modify node in-place instead.
+    """
+    node.val, node.next = node.next.val, node.next.next
+```
+
 # 删除链表的倒数第N个节点
 
 > 给定一个链表，删除链表的倒数第 n 个节点，并且返回链表的头结点。
@@ -51,6 +60,21 @@ ListNode* removeNthFromEnd(ListNode* head, int n) {
   nextNode = NULL;
   return head;
 }
+```
+
+```Python
+def removeNthFromEnd(self, head: ListNode, n: int) -> ListNode:
+    fast, slow = head, head
+    for _ in range(n):
+        fast = fast.next
+    if fast == None:
+        return head.next
+    while fast.next:
+        fast = fast.next
+        slow = slow.next
+
+    slow.next = slow.next.next
+    return head
 ```
 
 # 反转链表
@@ -89,6 +113,14 @@ ListNode* reverseList(ListNode* head) {
 }
 ```
 
+```Python
+def reverseList(self, head: ListNode) -> ListNode:
+    prev = None
+    while head:
+        head.next, prev, head = prev, head, head.next
+    return prev
+```
+
 # 合并两个有序链表
 
 > 将两个有序链表合并为一个新的有序链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
@@ -113,6 +145,21 @@ ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
   }
   return head;
 }
+```
+
+```Python
+def mergeTwoLists(self, l1: ListNode, l2: ListNode) -> ListNode:
+    if l1 == None:
+        return l2
+    if l2 == None:
+        return l1
+    if l1.val < l2.val:
+        ret = l1
+        ret.next = self.mergeTwoLists(l1.next, l2)
+    else:
+        ret = l2
+        ret.next = self.mergeTwoLists(l1, l2.next)
+    return ret
 ```
 
 * 迭代：
@@ -152,6 +199,25 @@ ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
 }
 ```
 
+```Python
+def mergeTwoLists(self, l1: ListNode, l2: ListNode) -> ListNode:
+    newHead = ListNode(0)
+    pre = newHead
+    while l1 and l2:
+        if l1.val < l2.val:
+            pre.next = l1
+            l1 = l1.next
+        else:
+            pre.next = l2
+            l2 = l2.next
+        pre = pre.next
+    if l1:
+        pre.next = l1
+    elif l2:
+        pre.next = l2
+    return newHead.next
+```
+
 # 回文链表
 
 > 请判断一个链表是否为回文链表。
@@ -159,7 +225,7 @@ ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
 需要找到链表的中点，可以使用快慢指针实现。快指针每次走两步，慢指针每次走一步，当快指针走完时，慢指针的位置就是中点。
 另外，还需要用到栈，每次慢指针走一步，将值存入栈中，当到达中点时，链表的前半段就存入栈中。再用栈后进先出的性质，可以和后半段链表按照回文对应比较。
 
-hea```Cpp
+```Cpp
 bool isPalindrome(ListNode *head) {
   if (!head || !head->next) {
     return true;
@@ -213,6 +279,32 @@ bool isPalindrome(ListNode *head) {
 }
 ```
 
+```Python
+def isPalindrome(self, head):
+    """
+    :type head: ListNode
+    :rtype: bool
+    """
+    slow, fast = head, head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+
+    node = None
+    while slow:
+        nxt = slow.next
+        slow.next = node
+        node = slow
+        slow = nxt
+
+    while node and head:
+        if node.val != head.val:
+            return False
+        node = node.next
+        head = head.next
+    return True
+```
+
 # 环形链表
 
 > 给定一个链表，判断链表中是否有环。
@@ -231,4 +323,19 @@ bool hasCycle(ListNode *head) {
   }
   return false;
 }
+```
+
+```Python
+def hasCycle(self, head):
+    """
+    :type head: ListNode
+    :rtype: bool
+    """
+    slow, fast = head, head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        if slow is fast:
+            return True
+    return False
 ```
