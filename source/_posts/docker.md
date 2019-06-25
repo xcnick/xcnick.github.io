@@ -6,7 +6,7 @@ tags: Docker
 > Docker笔记
 
 # 什么是Docker
-
+<!-- more -->
 
 # 安装Docker
 
@@ -74,6 +74,47 @@ $ docker run -it --rm \
 * `-it`: `-i`是指交互式操作;`-t`是指终端。
 * `--rm`: 容器推出后即删除。
 * 镜像以及命令。
+
+当利用`docker run`来创建容器时，Docker 在后台运行的标准操作包括：
+
+* 检查本地是否存在指定的镜像，不存在就从公有仓库下载
+* 利用镜像创建并启动一个容器
+* 分配一个文件系统，并在只读的镜像层外面挂载一层可读写层
+* 从宿主主机配置的网桥接口中桥接一个虚拟接口到容器中去
+* 从地址池配置一个 ip 地址给容器
+* 执行用户指定的应用程序
+* 执行完毕后容器被终止
+
+后台运行：使用`docker run -d`指令。注意，容器是否会长久运行，是和`docker run`指定的命令有关，和`-d`参数无关。
+
+### 启动一个已终止的容器
+
+```Bash
+$ docker container start
+```
+
+### 终止一个运行中的容器
+
+```Bash
+$ docker container stop
+```
+
+### 进入容器
+
+有两个方法：
+* `docker attach`
+* `docker exec`
+
+`attach`命令中，如果从这个stdin中exit，容器会终止。
+
+`exec`命令，后面可以跟-it参数，可以进入命令提示符。并且在stdin中exit，不会导致容器停止。
+
+### 删除容器
+
+使用`docker container rm`删除一个处于终止状态的容器。如果要删除运行中的容器，可使用`-f`参数。
+
+使用`docker container prune`清理所有处于终止状态的容器。
+
 
 ### 列出镜像
 
@@ -244,3 +285,153 @@ CMD ["sh", "-c", "echo $HOME"]
 * 应用运行前的准备工作
 
 对于预处理工作，可以使用一个脚本，放入`ENTRYPOINT`中执行。这个脚本会将接收到的参数，即`CMD`中的内容，放在脚本最后执行。
+
+### ENV 设置环境变量
+
+两种格式：
+
+* `ENV <key> <value>`
+* `ENV <key1>=<value1> <key2>=<value2>...`
+
+在后文中，无论是`RUN`指令，还是其他运行时应用，都可以用`$KEY`这种方式使用已定义的环境变量。
+
+### ARG 构建参数
+
+格式：`ARG <参数名>[=<默认值>]`
+
+效果与`ENV`类似，都是设置环境变量。不同的是，`ARG`设置的构建环境的环境变量，在容器的运行时时不会存在。该参数的默认值可以用`docker build`中的`--build-arg <参数值>=<值>`来覆盖。
+
+### VOLUME 匿名卷
+
+格式：
+
+* `VOLUME ["路径1", "路径2"...]`
+* `VOLUME <路径>`
+
+为了防止运行时用户忘记将动态文件所保存目录挂载为卷，在 Dockerfile 中，我们可以事先指定某些目录挂载为匿名卷，这样在运行时如果用户不指定挂载，其应用也可以正常运行，不会向容器存储层写入大量数据。
+
+```Dockerfile
+VOLUME /data
+```
+
+运行时可以覆盖这个挂在设置：
+```Bash
+docker run -d -v mydata:/data xxxx
+```
+
+### EXPOSE 声明端口
+
+格式：`EXPOSE <端口1> [<端口2>...]`
+
+声明运行时容器提供的服务端口，这只是一个声明。
+
+运行时使用`-p <宿主端口>:<容器端口>`是映射宿主和容器端口。但`EXPOSE`仅仅是声明。
+
+### WORKDIR 指定工作目录
+
+格式：`WORKDIR <工作目录路径>`
+
+指定工作目录，以后各层的当前目录就被改为指定的目录，若不存在，则`WORKDIR`会帮助建立此目录。
+
+### USER 指定当前用户
+
+格式：`USER <用户名>[:<用户组>]`
+
+`USER`指令和`WORKDIR`相似，都是改变环境状态并影响以后的层。`WORKDIR`是改变工作目录，`USER`则是改变之后层的执行`RUN`, `CMD`以及`ENTRYPOINT`这类命令的身份。该用户必须是事先建立好的。
+
+### HEALTHCHECK 健康检查
+
+格式：
+
+* `HEALTHCHECK [选项] CMD <命令>`: 设置检查容器健康状况的命令
+* `HEALTHCHECK NONE`: 如果基础镜像有健康检查指令，使用这行可以屏蔽掉其健康检查指令
+
+`HEALTHCHECK`指令是告诉 Docker 应该如何进行判断容器的状态是否正常。
+
+当在一个镜像指定了`HEALTHCHECK`指令后，用其启动容器，初始状态会为`starting`，在`HEALTHCHECK`指令检查成功后变为`healthy`，如果连续一定次数失败，则会变为`unhealthy`。`HEALTHCHECK`支持下列选项：
+
+* `--interval=<间隔>`：两次健康检查的间隔，默认为 30 秒；
+* `--timeout=<时长>`：健康检查命令运行超时时间，如果超过这个时间，本次健康检查就被视为失败，默认 30 秒；
+* `--retries=<次数>`：当连续失败指定次数后，则将容器状态视为 unhealthy，默认 3 次。
+
+### ONBUILD 为他人做嫁衣裳
+
+格式：`ONBUILD <其他指令>`
+
+`ONBUILD`是一个特殊的指令，它后面跟的是其它指令，比如`RUN`, `COPY`等，而这些指令，在当前镜像构建时并不会被执行。只有当以当前镜像为基础镜像，去构建下一级镜像的时候才会被执行。
+
+`Dockerfile`中的其它指令都是为了定制当前镜像而准备的，唯有`ONBUILD`是为了帮助别人定制自己而准备的。
+
+---
+
+## 数据管理
+
+### 数据卷
+
+* `数据卷`可以在容器之间共享和重用
+* 对`数据卷`的修改会立马生效
+* 对`数据卷`的更新，不会影响镜像
+* `数据卷`默认会一直存在，即使容器被删除
+
+
+```Bash
+# 创建一个数据卷
+$ docker volume create my-vol
+
+# 查看所有数据卷
+$ docker volume ls
+```
+
+在用`docker run`命令的时候，使用`--mount`标记来将`数据卷`挂载到容器里。在一次`docker run`中可以挂载多个`数据卷`。
+
+```Bash
+$ docker run -d -P \
+    --name web \
+    # -v my-vol:/wepapp \
+    --mount source=my-vol,target=/webapp \
+    training/webapp \
+    python app.py
+```
+
+```Bash
+# 删除数据卷
+$ docker volume rm my-vol
+
+# 清理数据卷
+$ docker volume prune
+```
+
+### 挂载主机目录
+
+使用`--mount`标记可以指定挂在一个本地的目录到容器中。使用`-v`参数时如果本地目录不存在 Docker 会自动为你创建一个文件夹，现在使用`--mount`参数时如果本地目录不存在，Docker会报错。Docker 挂载主机目录的默认权限是读写，用户也可以通过增加`readonly`指定为只读。
+
+`--mount`也可以挂载单个文件到容器中。
+
+---
+
+## 网络管理
+
+### 外部访问容器
+
+使用`-P`标记时Docker会随机映射一个`49000~49900`端口到容器内部的开放端口。
+
+使用`-p`可以指定要映射的端口。一个端口只能绑定到一个容器。
+
+```Bash
+# 映射所有接口的5000端口 hostPort:containerPort
+$ docker run -d -p 5000:5000 training/webapp python app.py
+
+# 映射到指定地址的指定端口 ip:hostPort:containerPort
+$ docker run -d -p 127.0.0.1:5000:5000 training/webapp python app.py
+
+# 映射到指定地址的任意端口 ip::containerPort
+$ docker run -d -p 127.0.0.1::5000 training/webapp python app.py
+```
+
+可以多次使用`-p`标记来绑定多个端口。
+
+### 配置DNS
+
+`docker run`命令时使用
+* `-h HOSTNAME`或者`--hostname=HOSTNAME`设定容器主机名，写入容器内的`/etc/hostname`中
+* `--dns=IP_ADDRESS`添加DNS服务器到容器的`/etc/resolv.conf`中
