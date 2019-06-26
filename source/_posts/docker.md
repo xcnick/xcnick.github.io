@@ -4,10 +4,7 @@ tags: Docker
 ---
 
 > Docker笔记
-
-# 什么是Docker
 <!-- more -->
-
 # 安装Docker
 
 以Ubuntu为例：
