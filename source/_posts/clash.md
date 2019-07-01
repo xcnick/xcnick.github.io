@@ -1,6 +1,6 @@
 title: Clash透明网关
-date: 2019-06-24 16:30:23
-tags: Docker
+date: 2019-06-26 10:40:24
+tags: 科学上网
 ---
 
 > Clash透明网关搭建流程
@@ -48,11 +48,11 @@ $ service iptables save
 $ rc-update add iptables
 ```
 
-# 安装clash
+# 安装Clash
 
-将`clash`及其配置文件拷贝到系统中。
+将`Clash`及其配置文件拷贝到系统中。
 
-## 设置开机自动启动`clash`
+## 设置开机自动启动`Clash`
 
 ```Bash
 # 创建clash.start文件
